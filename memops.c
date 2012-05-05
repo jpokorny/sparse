@@ -92,7 +92,7 @@ static void simplify_loads(struct basic_block *bb)
 		if (insn->opcode == OP_LOAD) {
 			struct instruction *dom;
 			pseudo_t pseudo = insn->src;
-			int local = local_pseudo(pseudo);
+			int local = 0 /* local_pseudo(pseudo) */;
 			struct pseudo_list *dominators;
 			unsigned long generation;
 

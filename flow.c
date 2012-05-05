@@ -658,6 +658,8 @@ static void simplify_one_symbol(struct entrypoint *ep, struct symbol *sym)
 	src = VOID;
 	if (def)
 		src = def->target;
+	else if (pseudo->type == PSEUDO_SYM)
+		return;
 
 	FOR_EACH_PTR(pseudo->users, pu) {
 		struct instruction *insn = pu->insn;
