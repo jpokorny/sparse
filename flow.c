@@ -671,11 +671,11 @@ static void simplify_one_symbol(struct entrypoint *ep, struct symbol *sym)
 
 	/* Turn the store into a no-op */
 	kill_store(def);
+external_visibility:
 	return;
 
 multi_def:
 complex_def:
-external_visibility:
 	all = 1;
 	FOR_EACH_PTR_REVERSE(pseudo->users, pu) {
 		struct instruction *insn = pu->insn;
