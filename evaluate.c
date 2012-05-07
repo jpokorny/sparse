@@ -25,6 +25,7 @@
 #include "symbol.h"
 #include "target.h"
 #include "expression.h"
+#include "scope.h"
 
 struct symbol *current_fn;
 
@@ -2802,16 +2803,22 @@ static struct symbol *evaluate_call(struct expression *expr)
 	} else {
 		if (!evaluate_arguments(sym, ctype, arglist))
 			return NULL;
-		args = expression_list_size(expr->args);
-		fnargs = symbol_list_size(ctype->arguments);
-		if (args < fnargs)
-			expression_error(expr,
-				     "not enough arguments for function %s",
-				     show_ident(sym->ident));
-		if (args > fnargs && !ctype->variadic)
-			expression_error(expr,
-				     "too many arguments for function %s",
-				     show_ident(sym->ident));
+
+		/* FIXME: this is a quick workaround as functions passed
+		          as arguments do not have ctype->arguments right
+			  (maybe arg_count was intended for this?) */
+		if (toplevel(sym->scope)) {
+		    args = expression_list_size(expr->args);
+		    fnargs = symbol_list_size(ctype->arguments);
+		    if (args < fnargs)
+			    expression_error(expr,
+					 "not enough arguments for function %s",
+					 show_ident(sym->ident));
+		    if (args > fnargs && !ctype->variadic)
+			    expression_error(expr,
+					 "too many arguments for function %s",
+					 show_ident(sym->ident));
+		}
 	}
 	if (sym->type == SYM_NODE) {
 		if (evaluate_symbol_call(expr))
